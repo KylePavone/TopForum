@@ -22,7 +22,8 @@ class Article(Base):
     subtitle = Column(String(255))
     maintext = Column(Text)
     created = Column(DateTime)
-
+    user = Column(Integer, ForeignKey("user.id"))
+    user_id = relationship("User")
     associated_themes = relationship("AssociatedThemes", secondary=articles_themes_table)
 
     def __init__(self, *args, **kwargs):
