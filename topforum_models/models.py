@@ -1,5 +1,4 @@
-from datetime import datetime
-from sqlalchemy import Table, Column, ForeignKey, Integer, String, Text, DATETIME
+from sqlalchemy import Table, Column, ForeignKey, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
 
 from core.db import Base
@@ -18,19 +17,31 @@ class Article(Base):
     __tablename__ = "article"
 
     id = Column(Integer, primary_key=True, index=True, unique=True)
-    title = Column(String, unique=True)
-    subtitle = Column(String)
+    title = Column(String(255), unique=True)
+    slug = Column(String(255), unique=True)
+    subtitle = Column(String(255))
     maintext = Column(Text)
-    created = Column(DATETIME, default=datetime.now())
+    created = Column(DateTime)
 
     associated_themes = relationship("AssociatedThemes", secondary=articles_themes_table)
+
+    def __init__(self, *args, **kwargs):
+        super(Article, self).__init__(*args, **kwargs)
+        self.generate_slug()
+
+    def generate_slug(self):
+        if self.title:
+            self.slug = makeslug(self.title)
+
+    def __repr__(self):
+        return f"Article --- {self.title}"
 
 
 class AssociatedThemes(Base):
     __tablename__ = "theme"
     id = Column(Integer, primary_key=True, unique=True)
-    name = Column(String)
-    slug = Column(String, unique=True)
+    name = Column(String(255))
+    slug = Column(String(255), unique=True)
 
     def __init__(self, *args, **kwargs):
         super(AssociatedThemes, self).__init__(*args, **kwargs)
@@ -40,5 +51,8 @@ class AssociatedThemes(Base):
         if self.name:
             self.slug = makeslug(self.name)
 
-    def __repr__(self):
+    def __str(self):
         return self.name
+
+    def __repr__(self):
+        return f"Theme --- {self.name}"
