@@ -5,6 +5,7 @@ from utils.depends import get_db
 from . import service
 from .schema import ArticleCreate, ArticleList
 
+
 router = APIRouter()
 
 

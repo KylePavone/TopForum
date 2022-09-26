@@ -1,10 +1,12 @@
+import uuid
+
 from fastapi import FastAPI
+from fastapi_users import FastAPIUsers
 from starlette.requests import Request
 from starlette.responses import Response
 from core.db import SessionLocal
-
 from routes import routes
-
+from user.models import User
 
 app = FastAPI()
 

@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
-
+from user.models import User
 from core.db import Base
 from utils.depends import makeslug
 
@@ -22,8 +22,7 @@ class Article(Base):
     subtitle = Column(String(255))
     maintext = Column(Text)
     created = Column(DateTime)
-    user = Column(Integer, ForeignKey("user.id"))
-    user_id = relationship("User")
+    user_id = Column(Integer, ForeignKey("user.id"))
     associated_themes = relationship("AssociatedThemes", secondary=articles_themes_table)
 
     def __init__(self, *args, **kwargs):
