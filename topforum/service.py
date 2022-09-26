@@ -3,6 +3,14 @@ from topforum.models import Article
 from .schema import ArticleCreate
 
 
+# Что бы не забыть
+#
+# session.query(MODEL).all()
+# session.query(MODEL).first()
+# и т. д.
+
+
+
 def get_articles_list(db: Session):
     return db.query(Article).all()
 

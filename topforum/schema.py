@@ -7,6 +7,7 @@ class ArticleBaseSchema(BaseModel):
     subtitle: str
     maintext: str
     created: datetime
+    user_id: int
 
     class Config:
         orm_mode = True
