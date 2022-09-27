@@ -4,3 +4,4 @@ __pycache__
 idea
 .env
 test.py
+.pytest_cache

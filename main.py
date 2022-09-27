@@ -11,6 +11,11 @@ from user.models import User
 app = FastAPI()
 
 
+@app.get("/")
+async def main():
+    return {"message": "Hello"}
+
+
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     response = Response("Internal server error", status_code=500)
