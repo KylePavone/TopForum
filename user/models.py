@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from core.db import Base
-
+from . import security
 
 class User(Base):
     __tablename__ = "user"
@@ -15,10 +15,21 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     articles = relationship("Article")
 
+
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
+        self.password = self.hash_password()
 
     def __repr__(self):
         return f"User {self.name} -- {self.email}"
+
+    def hash_password(self):
+        return security.get_password_hash(self.password)
+
+
+
+
+
+
 
 

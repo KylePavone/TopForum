@@ -20,5 +20,5 @@ async def user_login(user: UserLoginSchema = Body(...)):
     if service.check_user(user):
         return auth_handler.signJWT(user.email)
     return {
-        "error": "Wrong login details!"
+        "error": "Wrong credentials!"
     }
