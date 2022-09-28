@@ -1,9 +1,10 @@
 from datetime import datetime
 from faker import Faker
-from fastapi.testclient import TestClient
+# from fastapi.testclient import TestClient
 from core.db import *
-from main import app, db_session_middleware
+# from main import app, db_session_middleware
 from user.models import User
+from .client import client
 
 
 def generate_fake_userdata():
@@ -14,22 +15,21 @@ def generate_fake_userdata():
     return uname, mail, pswd
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://dima:12345@localhost/test_db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base.metadata.create_all(bind=engine)
-
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[db_session_middleware] = override_get_db
-client = TestClient(app)
+# SQLALCHEMY_DATABASE_URL = "postgresql://dima:12345@localhost/test_db"
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Base.metadata.create_all(bind=engine)
+#
+#
+# def override_get_db():
+#     try:
+#         db = TestingSessionLocal()
+#         yield db
+#     finally:
+#         db.close()
+#
+#
+# app.dependency_overrides[db_session_middleware] = override_get_db
 name, email, password = generate_fake_userdata()
 
 
@@ -54,7 +54,13 @@ def test_get_current_user():
         data = response.json()
         assert "user_info" in data
         assert "user_articles" in data
-    else:
+
+
+def test_get_current_user_error():
+    users = session.query(User).all()
+    user_id = 1234124
+    response = client.get(f"user/{user_id}")
+    if user_id <= len(users):
         assert response.status_code == 200
         data = response.json()
         assert data == {"message": "User with current id does not exists!"}
