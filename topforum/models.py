@@ -34,7 +34,7 @@ class Article(Base):
             self.slug = makeslug(self.title)
 
     def __repr__(self):
-        return f"Article --- {self.title}"
+        return self.title
 
 
 class AssociatedThemes(Base):

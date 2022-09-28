@@ -1,8 +1,6 @@
 from datetime import datetime
 from faker import Faker
-# from fastapi.testclient import TestClient
 from core.db import *
-# from main import app, db_session_middleware
 from user.models import User
 from .client import client
 
@@ -15,25 +13,22 @@ def generate_fake_userdata():
     return uname, mail, pswd
 
 
-# SQLALCHEMY_DATABASE_URL = "postgresql://dima:12345@localhost/test_db"
-# engine = create_engine(SQLALCHEMY_DATABASE_URL)
-# TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-# Base.metadata.create_all(bind=engine)
-#
-#
-# def override_get_db():
-#     try:
-#         db = TestingSessionLocal()
-#         yield db
-#     finally:
-#         db.close()
-#
-#
-# app.dependency_overrides[db_session_middleware] = override_get_db
+def create_user_request():
+    user = session.query(User).filter(User.name == "KylePavone").first()
+    try:
+        response = client.post(
+            "user/create", json={"name": user.name, "email": user.email, "password": password,
+                                 "date": str(datetime.now())}
+        )
+        return response
+    except:
+        return None
+
+
 name, email, password = generate_fake_userdata()
 
 
-def test_create_user():
+def test_create_user_success():
     response = client.post(
         "user/create", json={"name": name, "email": email, "password": password,
                              "date": str(datetime.now())}
@@ -45,7 +40,11 @@ def test_create_user():
     session.commit()
 
 
-def test_get_current_user():
+def test_create_user_error():
+    assert create_user_request() is None
+
+
+def test_get_current_user_success():
     users = session.query(User).all()
     user_id = 1
     response = client.get(f"user/{user_id}")
@@ -58,7 +57,7 @@ def test_get_current_user():
 
 def test_get_current_user_error():
     users = session.query(User).all()
-    user_id = 1234124
+    user_id = len(users) + 1
     response = client.get(f"user/{user_id}")
     if user_id <= len(users):
         assert response.status_code == 200
