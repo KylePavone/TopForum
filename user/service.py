@@ -4,6 +4,7 @@ from core.db import *
 from .models import User
 from . import security
 
+
 def create_user(db: Session, item: UserSchema):
     user = User(**item.dict())
     db.add(user)

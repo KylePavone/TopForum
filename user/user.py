@@ -4,6 +4,8 @@ from .schemas import UserSchema, UserLoginSchema
 from . import service
 from utils.depends import get_db
 from auth import auth_handler
+from .models import User
+from core.db import session
 
 
 user_router = APIRouter()
@@ -22,3 +24,10 @@ async def user_login(user: UserLoginSchema = Body(...)):
     return {
         "error": "Wrong credentials!"
     }
+
+@user_router.get("/{user_id}")
+async def get_current_user(user_id):
+    user = session.query(User).get(user_id)
+    if user:
+        return {"user_info": user, "user_articles": user.articles}
+    return {"message": "User with current id does not exists!"}
